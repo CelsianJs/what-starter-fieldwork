@@ -4,7 +4,8 @@ Fieldwork is a What Framework starter for a computational research lab or artist
 
 ## Quick start
 
-Use Node.js 22.x. Install Chromium once before running the browser smoke test: `npx playwright install chromium`.
+Use Node.js 22.x. After `npm ci`, install Chromium once before running the browser smoke test: `npx playwright install chromium`.
+On minimal Linux CI images that do not already include browser system libraries, use `npx playwright install --with-deps chromium` instead.
 
 ```bash
 npm ci
