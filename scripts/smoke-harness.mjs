@@ -1,4 +1,5 @@
 import { spawn } from 'node:child_process';
+import { stripVTControlCharacters } from 'node:util';
 import { fileURLToPath, pathToFileURL } from 'node:url';
 
 export function starterRoot(metaUrl) {
@@ -33,6 +34,10 @@ export function collectChildLogs(child) {
   return logs;
 }
 
+function readinessText(logs) {
+  return stripVTControlCharacters(logs.join(''));
+}
+
 export async function waitForOwnedReadiness(child, {
   logs,
   readyPattern,
@@ -42,7 +47,7 @@ export async function waitForOwnedReadiness(child, {
   if (child.exitCode !== null || child.signalCode !== null) {
     throw new Error(`${label} exited before readiness:\n${logs.join('')}`);
   }
-  if (readyPattern.test(logs.join(''))) return;
+  if (readyPattern.test(readinessText(logs))) return;
 
   await new Promise((resolve, reject) => {
     let timer;
@@ -58,7 +63,7 @@ export async function waitForOwnedReadiness(child, {
       fn(value);
     };
     const onData = () => {
-      if (readyPattern.test(logs.join(''))) finish(resolve);
+      if (readyPattern.test(readinessText(logs))) finish(resolve);
     };
     const onExit = (code, signal) => {
       finish(reject, new Error(`${label} exited before readiness (code ${code ?? 'null'}, signal ${signal ?? 'null'}):\n${logs.join('')}`));
