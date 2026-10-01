@@ -11,7 +11,10 @@ function Shell({ children }) {
     <div class="shell">
       <a class="skip-link" href="#content">Skip to content</a>
       <header class="topbar" aria-label="Primary">
-        <a class="brand" href="/" data-route>FIELDWORK</a>
+        <a class="brand" href="/" data-route>
+          <span>FIELDWORK</span>
+          <small>Public AI art lab</small>
+        </a>
         <nav class="nav">
           <a href="/projects" data-route>Index</a>
           <a href="/build" data-route>Build notes</a>

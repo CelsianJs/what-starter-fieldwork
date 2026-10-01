@@ -3,6 +3,7 @@ import { Link } from 'what-framework/router';
 export default function ProjectCard({ project }) {
   return (
     <article class="project-card" style={{ '--project-accent': project.accent }}>
+      <div class="card-rule" aria-hidden="true" />
       <div>
         <p class="card-meta">{project.discipline} / {project.year} / {project.phase}</p>
         <h3>{project.title}</h3>

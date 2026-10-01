@@ -19,25 +19,27 @@ export default function ProjectDetailPage({ params }) {
 
   return (
     <article class="detail-page" style={{ '--project-accent': project.accent }}>
-      <div class="detail-heading">
-        <p class="kicker">{project.discipline} / {project.phase}</p>
-        <h1>{project.title}</h1>
-        <p>{project.detail}</p>
-      </div>
-      <dl class="specimen-list">
-        <div>
-          <dt>Sample</dt>
-          <dd>{project.sample}</dd>
+      <header class="record-header">
+        <div class="detail-heading">
+          <p class="kicker">{project.discipline} / {project.phase}</p>
+          <h1>{project.title}</h1>
+          <p>{project.detail}</p>
         </div>
-        <div>
-          <dt>Year</dt>
-          <dd>{project.year}</dd>
-        </div>
-        <div>
-          <dt>Tags</dt>
-          <dd>{project.tags.join(', ')}</dd>
-        </div>
-      </dl>
+        <dl class="specimen-list">
+          <div>
+            <dt>Sample</dt>
+            <dd>{project.sample}</dd>
+          </div>
+          <div>
+            <dt>Year</dt>
+            <dd>{project.year}</dd>
+          </div>
+          <div>
+            <dt>Tags</dt>
+            <dd>{project.tags.join(', ')}</dd>
+          </div>
+        </dl>
+      </header>
       <GenerativeCanvas />
     </article>
   );

@@ -27,17 +27,21 @@
 - Content hierarchy: oversized editorial hero, interactive field instrument, project records, reference notes
 
 ## Design principles
-- Principle 1: Treat the lab as a serious gallery, not a chatbot demo
-- Principle 2: Every interactive flourish has a code pattern to teach
+- Principle 1: Treat the lab as a serious gallery and field archive, not a chatbot demo
+- Principle 2: Make the generated canvas the primary material specimen, with text and controls arranged like accession notes
 - Tradeoffs: CSR keeps the starter simple while Vura aliases preserve known deep routes
 
 ## Visual language
-- Color: black and ivory base with acid yellow, occasional orange and cyan accents
-- Typography: editorial serif for display, humanist sans for controls, monospace only for code and canvas annotations
-- Spacing/layout rhythm: asymmetry, large negative space, dense specimen cards
-- Shape/radius/elevation: crisp borders, pill controls, almost no soft shadows
-- Motion: deterministic canvas redraws, reduced-motion safe CSS
-- Imagery/iconography: generated canvas replaces external imagery
+- Color: off-white archive paper, ink black, pale clay rules, acid citron as a narrow signal accent, occasional cyan/orange specimen colors
+- Typography: readable literary serif for display; clear humanist sans for body and controls; monospace only for code and canvas annotations
+- Spacing/layout rhythm: light research archive framing a large dark canvas specimen, concise captions, horizontal toolbars, measured index cards
+- Shape/radius/elevation: hairline rules, accession labels, squared cards, quiet table borders, no generic SaaS shadows
+- Motion: one restrained page-load reveal, precise hover/focus states, deterministic canvas redraws, reduced-motion safe CSS
+- Imagery/iconography: generated canvas is the art object; no stock AI imagery or remote assets
+
+## Direction log
+- Considered: signal control room — dense neon dashboards, scopes, readouts. Rejected for this starter because it would make the field notes feel like generic analytics and fight the art-journal goal.
+- Chosen: light research archive / specimen table — the page is mostly paper and ink, while the dark canvas is the dramatic object. Public product pages stay art/research focused; implementation teaching is reserved for `/build`.
 
 ## Components
 - Existing components to reuse: What Router `Link`, What signals and effects

@@ -1,26 +1,142 @@
-# Build notes
+# How Fieldwork is built
 
-Fieldwork is a small but complete What Framework starter. The rendered `/build` page is generated from the same ideas in this file, but this file is easier for agents to scan in source form.
+Fieldwork is a client-rendered research archive built with What Framework 0.13.10. This guide records the implementation, failed approaches and checks that shaped the starter. The live `/build` page and the public starter journal provide the same learning path.
 
-## State and routing
+## Read the source in this order
 
-`src/state/gallery.js` owns the reusable reactive state. `activeFilter`, `canvasSeed`, `drawingMode`, and `selectedSlug` are module-level signals. `filteredProjects` and `activeProject` are computed values so the filter rail and project grid update without re-running the whole app.
+- [src/state/gallery.js](src/state/gallery.js) — Module signals hold filters, canvas seed, drawing mode and the selected research slug.
+- [src/components/GenerativeCanvas.jsx](src/components/GenerativeCanvas.jsx) — The component draws from signal accessors and cleans up resize/keyboard listeners.
+- [scripts/generate-static-aliases.mjs](scripts/generate-static-aliases.mjs) — Deployment aliases derive from the projects dataset so every detail route is directly openable.
+- [tests/smoke.mjs](tests/smoke.mjs) — The smoke test compares canvas pixels, opens every detail route and screenshots desktop/mobile pages.
 
-`src/routes.jsx` declares the public pages: `/`, `/projects`, `/projects/:slug`, `/build`, and `/404`. The project detail page validates the slug against `src/data/projects.js` and renders an honest missing-record state when the slug is unknown.
+## State and rendering
 
-## Effects and cleanup
+Module-level `signal()` values are shared between routes. `computed()` derives filtered records; views read reactive values through function bindings. Components initialize once rather than rerendering like React components. A mutable signal is the source of truth; do not copy a computed total into another signal and create a synchronization loop.
 
-`src/components/GenerativeCanvas.jsx` uses `useEffect` to bind `resize` and `keydown` listeners. The cleanup function removes both listeners. This is the main lifecycle pattern agents should copy when they add browser APIs.
+```js
+import { signal, computed } from 'what-framework';
 
-## Vura shape
+export const activeFilter = signal('all');
+export const filteredProjects = computed(() => {
+  const filter = activeFilter();
+  return filter === 'all'
+    ? projects
+    : projects.filter(project => project.discipline === filter);
+});
+```
 
-`npm run build` runs Vite, then `scripts/generate-static-aliases.mjs` copies `dist/index.html` into known deep route folders. That makes `/projects/radio-garden` and `/build` work as static entry points after upload.
+This excerpt uses the `projects` dataset imported in `src/state/gallery.js`. Module state uses `signal`, not component-only `useSignal`.
 
-## Issues encountered
+## Use signal accessors as effect dependencies
 
-- Passing sampled signal values to an effect did not redraw the canvas. Dependencies now use the signal accessors, and browser coverage compares actual canvas pixels after a seed change.
-- A detail record lacked a direct deployment alias. Aliases now derive from the shared project dataset, and browser coverage opens each record directly.
-- Shared module state must use `signal()` and `computed()`. Hook-style `useSignal()` is component-only and will throw at runtime when used in `src/state/gallery.js`.
-- The design needed to be explicit that the canvas is seeded browser code, not live AI.
-- Known static aliases are deliberate. They avoid treating every unknown path as a successful page.
-- The starter uses CSR for simplicity. A future Vura demo can add server-rendered variants.
+Source: [src/components/GenerativeCanvas.jsx](src/components/GenerativeCanvas.jsx).
+
+```jsx
+useEffect(() => {
+  draw();
+  const onResize = () => draw();
+  window.addEventListener('resize', onResize);
+  return () => window.removeEventListener('resize', onResize);
+}, [canvasSeed, drawingMode]);
+```
+
+Passing the accessor lets the effect observe future signal writes. Passing canvasSeed() would sample one value and miss redraws.
+
+## Generate route aliases from the content source
+
+Source: [scripts/generate-static-aliases.mjs](scripts/generate-static-aliases.mjs).
+
+```js
+const aliases = [
+  '/projects',
+  ...projects.map((project) => `/projects/${project.slug}`),
+  '/build',
+  '/404',
+];
+```
+
+The deploy shape follows the data list, so new records get static entry points when the dataset changes.
+
+## Assert the canvas really redraws
+
+Source: [tests/smoke.mjs](tests/smoke.mjs).
+
+```js
+const beforeCanvas = await page.locator('canvas').evaluate((canvas) => canvas.toDataURL());
+await page.getByRole('button', { name: 'New seed' }).click();
+await page.waitForFunction((before) => {
+  const canvas = document.querySelector('canvas');
+  return canvas && canvas.toDataURL() !== before;
+}, beforeCanvas);
+```
+
+A visual starter needs evidence that the visual state changed, not only that the event handler ran.
+
+## The canvas did not redraw
+
+The first implementation sampled dependency values instead of passing accessors. Clicking the seed control succeeded, but the drawing stayed unchanged.
+
+Before:
+
+```js
+useEffect(() => {
+  draw();
+}, [canvasSeed(), drawingMode()]);
+```
+
+After:
+
+```js
+useEffect(() => {
+  draw();
+}, [canvasSeed, drawingMode]);
+```
+
+The full component also binds keyboard and resize listeners and removes them during cleanup. The smoke test compares canvas pixels after a seed change; a successful click alone would not prove redraw.
+
+## A detail page had no deployment entry
+
+The archive included a record that the alias script omitted. Generating routes from the shared dataset fixed the mismatch. The browser suite opens every record directly, not only through client navigation.
+
+## A passing smoke still hung in CI
+
+The browser assertions passed, but the workflow never finished: the test had started `npx vite preview` and terminated the wrapper instead of the real preview process.
+
+Before:
+
+```js
+const server = spawn('npx', ['vite', 'preview']);
+// ...assertions...
+server.kill('SIGTERM');
+```
+
+Now [scripts/smoke-harness.mjs](scripts/smoke-harness.mjs) starts the local Vite CLI through `process.execPath`, requires owned-child readiness, uses a strict port and awaits termination with a bounded fallback. Each standalone repository includes its own helper. Isolated copies passed without sibling files and exited after their PASS line; the next hosted CI run verifies the Linux path too.
+
+## Visual iteration
+
+The first dark layout passed functional checks but did not meet the showcase bar. A light archive frame, dominant canvas specimen and smaller headline made the artifact easier to use. A separate review checked real desktop and 390px screenshots. Functional tests and visual review support different claims; neither substitutes for the other.
+
+## What worked smoothly
+
+- Deriving detail aliases from the dataset removed the chance of forgetting a single research record.
+- The canvas smoke test checks pixel changes, not just button text, so it catches a silent rendering no-op.
+
+## Verification
+
+Use Node.js 22.x:
+
+```sh
+npm ci
+npx playwright install chromium
+npm test
+npm run smoke
+```
+
+`smoke` builds fresh before testing. The recorded local gates passed: 3 unit tests, production build, real canvas pixel changes, every record route, desktop/mobile rendering and zero dependency audit findings. The 390px overflow check covered the home, index, record and build pages. Hosted CI status is separate from these local results.
+
+## Deployment and boundaries
+
+`npm run build` emits explicit HTML shells, hashed client assets and root `404.html`. Vura's static hosting returns HTTP 404 for unknown paths. Local Vite preview uses SPA fallback, so do not infer production HTTP status from preview alone.
+
+- Canvas art is deterministic browser drawing, not live AI inference.
+- The archive is client rendered; research detail content is not request-time SSR article HTML.

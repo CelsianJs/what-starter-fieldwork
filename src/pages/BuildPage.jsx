@@ -7,6 +7,13 @@ export default function BuildPage() {
         <article>
           <h2>Signals and computed state</h2>
           <p><code>src/state/gallery.js</code> owns the global filter, active seed, drawing mode, and selected project. <code>filteredProjects</code> and <code>activeProject</code> are computed values that only update dependent DOM.</p>
+          <pre><code>{`export const activeFilter = signal('all');
+export const filteredProjects = computed(() => {
+  const filter = activeFilter();
+  return filter === 'all'
+    ? projects
+    : projects.filter((project) => project.discipline === filter);
+});`}</code></pre>
         </article>
         <article>
           <h2>Routing</h2>
@@ -15,6 +22,15 @@ export default function BuildPage() {
         <article>
           <h2>Effects and cleanup</h2>
           <p><code>GenerativeCanvas</code> attaches resize and keyboard listeners in <code>useEffect</code> and removes them in the returned cleanup function.</p>
+          <pre><code>{`useEffect(() => {
+  draw();
+  window.addEventListener('resize', draw);
+  window.addEventListener('keydown', onKey);
+  return () => {
+    window.removeEventListener('resize', draw);
+    window.removeEventListener('keydown', onKey);
+  };
+}, [canvasSeed, drawingMode]);`}</code></pre>
         </article>
         <article>
           <h2>Known limits</h2>

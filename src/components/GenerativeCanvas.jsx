@@ -47,22 +47,34 @@ export default function GenerativeCanvas() {
     ctx.fillText(`seed ${canvasSeed()} / ${mode}`, 18, height - 20);
   };
 
+  const handleNextSeed = () => {
+    nextSeed();
+    status(`Seed advanced to ${canvasSeed()}.`);
+  };
+
+  const handleCycleMode = () => {
+    cycleMode();
+    status(`Mode changed to ${drawingMode()}.`);
+  };
+
+  const handleResetSeed = () => {
+    resetSeed();
+    status('Seed reset to 3029.');
+  };
+
   useEffect(() => {
     draw();
     const onResize = () => draw();
     const onKey = (event) => {
       if (event.target && ['INPUT', 'TEXTAREA', 'SELECT'].includes(event.target.tagName)) return;
       if (event.key.toLowerCase() === 'n') {
-        nextSeed();
-        status(`Seed advanced to ${canvasSeed()}.`);
+        handleNextSeed();
       }
       if (event.key.toLowerCase() === 'r') {
-        resetSeed();
-        status('Seed reset to 3029.');
+        handleResetSeed();
       }
       if (event.key.toLowerCase() === 'm') {
-        cycleMode();
-        status(`Mode changed to ${drawingMode()}.`);
+        handleCycleMode();
       }
     };
     window.addEventListener('resize', onResize);
@@ -75,18 +87,37 @@ export default function GenerativeCanvas() {
 
   return (
     <section class="canvas-panel" aria-labelledby="canvas-title">
+      <div class="canvas-stage">
+        <canvas ref={canvasRef} class="field-canvas" aria-label="Deterministic generative research field" />
+      </div>
       <div class="canvas-copy">
-        <p class="kicker">Seeded field instrument</p>
-        <h2 id="canvas-title">A repeatable signal map for looking twice.</h2>
-        <p>Keyboard: <kbd>N</kbd> new seed, <kbd>M</kbd> mode, <kbd>R</kbd> reset. The same seed always renders the same image. No live inference runs here.</p>
+        <div>
+          <p class="kicker">Seeded field instrument</p>
+          <h2 id="canvas-title">Repeatable signal map</h2>
+          <p>A deterministic drawing for studying how a named process changes what people notice.</p>
+        </div>
+        <dl class="canvas-meta" aria-label="Current canvas state">
+          <div>
+            <dt>Seed</dt>
+            <dd>{() => canvasSeed()}</dd>
+          </div>
+          <div>
+            <dt>Mode</dt>
+            <dd>{() => drawingMode()}</dd>
+          </div>
+        </dl>
+        <div class="key-map" aria-label="Keyboard shortcuts">
+          <span><kbd>N</kbd> seed</span>
+          <span><kbd>M</kbd> mode</span>
+          <span><kbd>R</kbd> reset</span>
+        </div>
         <div class="button-row">
-          <button class="button" onClick={nextSeed}>New seed</button>
-          <button class="button ghost" onClick={cycleMode}>Change mode</button>
-          <button class="button ghost" onClick={resetSeed}>Reset</button>
+          <button class="button" onClick={handleNextSeed}>New seed</button>
+          <button class="button ghost" onClick={handleCycleMode}>Change mode</button>
+          <button class="button ghost" onClick={handleResetSeed}>Reset</button>
         </div>
         <p class="sr-live" aria-live="polite">{status()}</p>
       </div>
-      <canvas ref={canvasRef} class="field-canvas" aria-label="Deterministic generative research field" />
     </section>
   );
 }

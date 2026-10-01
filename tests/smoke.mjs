@@ -1,19 +1,20 @@
 import { mkdir } from 'node:fs/promises';
-import { spawn } from 'node:child_process';
 import { chromium } from 'playwright';
 import { projects } from '../src/data/projects.js';
+import { collectChildLogs, spawnLocalVitePreview, starterRoot, stopOwnedProcess, waitForOwnedReadiness } from '../scripts/smoke-harness.mjs';
 
 const port = 5178;
 const baseURL = `http://127.0.0.1:${port}`;
-const server = spawn(process.platform === 'win32' ? 'npx.cmd' : 'npx', ['vite', 'preview', '--host', '127.0.0.1', '--port', String(port)], {
-  stdio: ['ignore', 'pipe', 'pipe'],
-});
-
-const logs = [];
-server.stdout.on('data', (chunk) => logs.push(chunk.toString()));
-server.stderr.on('data', (chunk) => logs.push(chunk.toString()));
+const root = starterRoot(import.meta.url);
+const server = spawnLocalVitePreview({ cwd: root, port });
+const logs = collectChildLogs(server);
 
 async function waitForServer() {
+  await waitForOwnedReadiness(server, {
+    logs,
+    readyPattern: new RegExp(`Local:\\s+http://127\\.0\\.0\\.1:${port}/`),
+    label: 'Fieldwork Vite preview',
+  });
   const deadline = Date.now() + 15000;
   while (Date.now() < deadline) {
     try {
@@ -68,5 +69,5 @@ try {
   console.log('PASS fieldwork smoke: home keyboard, filtered index, detail route, build route, desktop/mobile screenshots');
 } finally {
   if (browser) await browser.close().catch(() => {});
-  server.kill('SIGTERM');
+  await stopOwnedProcess(server, { logs, label: 'Fieldwork Vite preview' });
 }
