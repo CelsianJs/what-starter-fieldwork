@@ -289,12 +289,14 @@ dd {
 .canvas-copy p { margin: 0; max-width: 38rem; }
 .canvas-meta {
   display: flex;
+  justify-content: flex-end;
   gap: 0.75rem;
   margin: 0;
   padding: 0;
 }
 .canvas-meta div {
   min-width: 4.9rem;
+  max-width: 11rem;
   padding: 0.52rem 0.6rem;
   background: var(--acid);
   border: 1px solid var(--ink);
@@ -350,7 +352,7 @@ dd {
   min-height: 280px;
   display: flex;
   flex-direction: column;
-  justify-content: space-between;
+  justify-content: flex-start;
   padding: 1rem;
   border: 1px solid var(--line-dark);
   background: rgba(255, 250, 240, 0.58);
@@ -378,7 +380,8 @@ dd {
   display: flex;
   flex-wrap: wrap;
   gap: 0.32rem;
-  margin: 1rem 0;
+  margin: auto 0 1rem;
+  padding-top: 1rem;
 }
 .tag-row span {
   padding: 0.26rem 0.45rem;
@@ -413,6 +416,33 @@ dd {
   grid-template-columns: minmax(210px, 0.28fr) minmax(0, 1fr);
   gap: clamp(1rem, 2.5vw, 2rem);
   align-items: start;
+}
+.record-header {
+  grid-template-columns: 1fr;
+}
+.record-header .detail-heading {
+  max-width: 980px;
+  margin-bottom: 0;
+}
+.record-header .detail-heading h1 {
+  font-size: clamp(2.7rem, 5vw, 4.65rem);
+}
+.record-header .specimen-list {
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  width: 100%;
+  max-width: 980px;
+}
+.record-header .specimen-list div {
+  border-bottom: 0;
+  border-right: 1px solid var(--line);
+}
+.record-header .specimen-list div:last-child { border-right: 0; }
+.detail-page .canvas-panel {
+  margin-top: clamp(1rem, 2.4vw, 2rem);
+}
+.detail-page .canvas-stage {
+  min-height: clamp(430px, 56vw, 650px);
+  aspect-ratio: 16 / 9;
 }
 .index-aside,
 .specimen-list,
@@ -505,6 +535,14 @@ dd {
   .index-aside { position: static; }
   .filter-rail { flex-direction: row; flex-wrap: wrap; }
   .filter { width: auto; }
+  .record-header .specimen-list {
+    grid-template-columns: 1fr;
+  }
+  .record-header .specimen-list div {
+    border-right: 0;
+    border-bottom: 1px solid var(--line);
+  }
+  .record-header .specimen-list div:last-child { border-bottom: 0; }
   .project-grid,
   .project-grid.wide {
     grid-template-columns: 1fr;
@@ -548,8 +586,13 @@ dd {
     min-height: 360px;
     border-width: 7px;
   }
+  .detail-page .canvas-stage {
+    aspect-ratio: auto;
+    min-height: 360px;
+  }
   .canvas-meta {
     flex-wrap: wrap;
+    justify-content: flex-start;
   }
   .button {
     width: 100%;

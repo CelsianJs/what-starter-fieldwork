@@ -37,6 +37,13 @@ try {
   });
   await page.goto(baseURL, { waitUntil: 'networkidle' });
   await page.getByRole('heading', { name: /signals from the edge/i }).waitFor();
+  await page.getByText('Selected records').waitFor();
+  const cardTitleTops = await page.locator('.project-grid .project-card h3').evaluateAll((items) => (
+    items.map((item) => Math.round(item.getBoundingClientRect().top))
+  ));
+  if (Math.max(...cardTitleTops) - Math.min(...cardTitleTops) > 4) {
+    throw new Error(`Project card titles are not aligned: ${cardTitleTops.join(', ')}`);
+  }
   const beforeCanvas = await page.locator('canvas').evaluate((canvas) => canvas.toDataURL());
   await page.getByRole('button', { name: 'New seed' }).click();
   await page.waitForFunction((before) => {
@@ -52,11 +59,25 @@ try {
 
   await page.goto(`${baseURL}/projects/radio-garden`, { waitUntil: 'networkidle' });
   await page.getByRole('heading', { name: /Radio Garden For Latent Machines/i }).waitFor();
+  await page.getByText('Record').waitFor();
+  await page.getByText('Radio Garden For Latent Machines').first().waitFor();
+  const detailLayout = await page.evaluate(() => {
+    const heading = document.querySelector('.detail-heading h1').getBoundingClientRect();
+    const specimen = document.querySelector('.specimen-list').getBoundingClientRect();
+    return { headingWidth: Math.round(heading.width), specimenWidth: Math.round(specimen.width) };
+  });
+  if (detailLayout.headingWidth < detailLayout.specimenWidth * 0.8) {
+    throw new Error(`Record heading hierarchy is too narrow: ${JSON.stringify(detailLayout)}`);
+  }
+  await page.screenshot({ path: 'test-artifacts/fieldwork-desktop-detail.png', fullPage: true });
   for (const project of projects) {
     await page.goto(`${baseURL}/projects/${project.slug}`, { waitUntil: 'networkidle' });
     await page.getByRole('heading', { name: project.title }).waitFor();
   }
   await page.setViewportSize({ width: 390, height: 844 });
+  await page.goto(`${baseURL}/projects/radio-garden`, { waitUntil: 'networkidle' });
+  await page.getByRole('heading', { name: /Radio Garden For Latent Machines/i }).waitFor();
+  await page.screenshot({ path: 'test-artifacts/fieldwork-mobile-detail.png', fullPage: true });
   await page.goto(`${baseURL}/build`, { waitUntil: 'networkidle' });
   await page.getByRole('heading', { name: /How Fieldwork is built/i }).waitFor();
   await page.screenshot({ path: 'test-artifacts/fieldwork-mobile-build.png', fullPage: true });

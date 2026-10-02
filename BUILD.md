@@ -116,10 +116,19 @@ Now [scripts/smoke-harness.mjs](scripts/smoke-harness.mjs) starts the local Vite
 
 The first dark layout passed functional checks but did not meet the showcase bar. A light archive frame, dominant canvas specimen and smaller headline made the artifact easier to use. A separate review checked real desktop and 390px screenshots. Functional tests and visual review support different claims; neither substitutes for the other.
 
+## Opus refinement: archive hierarchy and specimen scale
+
+The follow-up design review found two real layout mistakes. The record cards used `justify-content: space-between`, so titles landed at different vertical positions when summaries and tag counts varied. The fix keeps the card content top-aligned and pushes only the tag/link footer down with `margin-top: auto`; the smoke test now compares the three card-title baselines.
+
+The detail view also gave the metadata table the wide column while the record title was squeezed into a narrow column. The header now lets the record title and summary span the page, then presents the specimen metadata as a compact row. The canvas metadata includes the selected record title, which protects the route-level state pattern from displaying a stale or generic label.
+
+The canvas was deterministic but too timid on wide detail pages. `generateField()` now expands the radius envelope and applies a slight horizontal bias when the specimen is wide. A unit test checks that a 1220×660 specimen fills a useful area without changing the seeded redraw lifecycle, keyboard shortcuts or cleanup behavior.
+
 ## What worked smoothly
 
 - Deriving detail aliases from the dataset removed the chance of forgetting a single research record.
 - The canvas smoke test checks pixel changes, not just button text, so it catches a silent rendering no-op.
+- The card-alignment smoke catches flex layouts that accidentally turn variable content into uneven archive cards.
 
 ## Verification
 
@@ -132,7 +141,7 @@ npm test
 npm run smoke
 ```
 
-`smoke` builds fresh before testing. The recorded local gates passed: 3 unit tests, production build, real canvas pixel changes, every record route, desktop/mobile rendering and zero dependency audit findings. The 390px overflow check covered the home, index, record and build pages. Hosted CI status is separate from these local results.
+`smoke` builds fresh before testing. The recorded local gates passed: unit tests, production build, real canvas pixel changes, card baseline alignment, every record route, desktop/mobile rendering and zero dependency audit findings. The 390px overflow check covered the home, index, record and build pages. Hosted CI status is separate from these local results.
 
 ## Deployment and boundaries
 

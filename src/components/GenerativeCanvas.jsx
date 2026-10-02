@@ -1,5 +1,5 @@
 import { useEffect, useRef, useSignal } from 'what-framework';
-import { canvasSeed, cycleMode, drawingMode, nextSeed, resetSeed } from '../state/gallery.js';
+import { activeProject, canvasSeed, cycleMode, drawingMode, nextSeed, resetSeed } from '../state/gallery.js';
 import { generateField } from '../utils/generative.js';
 
 export default function GenerativeCanvas() {
@@ -104,6 +104,10 @@ export default function GenerativeCanvas() {
           <div>
             <dt>Mode</dt>
             <dd>{() => drawingMode()}</dd>
+          </div>
+          <div>
+            <dt>Record</dt>
+            <dd>{() => activeProject().title}</dd>
           </div>
         </dl>
         <div class="key-map" aria-label="Keyboard shortcuts">

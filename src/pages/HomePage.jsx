@@ -35,7 +35,7 @@ export default function HomePage() {
 
       <section class="section-split">
         <div>
-          <p class="kicker">Three records</p>
+          <p class="kicker">Selected records</p>
           <h2>Designed like a gallery, structured like a lab archive.</h2>
           <p class="section-note">The archive moves between machine perception, language weather, cooperative tools, and slow interfaces without pretending the browser is a black box.</p>
         </div>

@@ -40,6 +40,8 @@ export const filteredProjects = computed(() => {
           <h2>Issues and lessons</h2>
           <p>Passing sampled values to an effect left the drawing unchanged when the seed changed. Pass signal accessors: <code>useEffect(draw, [canvasSeed, drawingMode])</code>. The browser test checks actual canvas pixels, not just whether a click succeeds.</p>
           <p>A research record initially lacked a direct deployment route. Aliases now come from the project dataset, and the smoke test opens every record directly. Listener cleanup prevents stale keyboard handlers after navigation.</p>
+          <p>The Opus design pass found that card footers were stretching title baselines and the detail record gave metadata more weight than the title. The card stack now pins tags and links to the foot, the detail title spans the record, and the canvas metadata names the selected record so agents can copy a truthful archive pattern.</p>
+          <p>The first detail specimen also left too much empty black field. The generator now expands its point envelope on wide canvases, and a unit test checks the rendered field covers a useful portion of a 1220×660 specimen.</p>
           <p><a href="https://github.com/CelsianJs/what-starter-fieldwork/blob/main/src/components/GenerativeCanvas.jsx">Read the canvas source</a> or <a href="https://github.com/CelsianJs/what-starter-fieldwork/blob/main/BUILD.md">the complete build guide</a>.</p>
         </article>
       </div>
