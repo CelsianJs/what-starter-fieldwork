@@ -130,7 +130,22 @@ The canvas was deterministic but too timid on wide detail pages. `generateField(
 - The canvas smoke test checks pixel changes, not just button text, so it catches a silent rendering no-op.
 - The card-alignment smoke catches flex layouts that accidentally turn variable content into uneven archive cards.
 
-## Verification
+## Research dossiers without invented evidence
+
+`src/data/dossiers.js` provides an accession, question, method, three locally authored specimens, reading notes and limits for each known route. `ProjectDetailPage` reads the record once from route params, then renders its dossier before the shared canvas. The caption drawer is authored text, not a generated corpus; the slow-interface notes are design reflections, not measured behavioral results.
+
+```jsx
+const dossier = dossiers[project.slug];
+const next = projects[(projects.indexOf(project) + 1) % projects.length];
+```
+
+This is static route content, so it does not need another signal or synchronization effect. Adjacent navigation comes from the same dataset that supplies static aliases. The dossier test requires every project to have its own question and complete content; the browser smoke opens every dossier and follows its next-record link.
+
+Problem: the original metadata named fragments and measurements the UI did not actually contain. Fix: replace those counts with honest authored specimens and explicit limitations. The shared canvas remains useful for comparison but is not presented as evidence for every study. Mobile now opens with a compact accession header before the specimen, preserving the paper/ink/citron archive rather than turning it into a dashboard.
+
+What stayed smooth: the existing generator, signal-accessor dependencies, resize/keyboard cleanup and route-alias generator needed no redesign. The same canvas pixel test still locks real redraw behavior.
+
+## Verification commands
 
 Use Node.js 22.x:
 

@@ -30,11 +30,12 @@ try {
   await waitForServer();
   await mkdir('test-artifacts', { recursive: true });
   var browser = await chromium.launch();
-  const page = await browser.newPage({ viewport: { width: 1366, height: 900 } });
+  const page = await browser.newPage({ viewport: { width: 1440, height: 1000 } });
   const consoleErrors = [];
   page.on('console', (message) => {
     if (message.type() === 'error') consoleErrors.push(message.text());
   });
+  page.on('pageerror', error => consoleErrors.push(error.message));
   await page.goto(baseURL, { waitUntil: 'networkidle' });
   await page.getByRole('heading', { name: /signals from the edge/i }).waitFor();
   await page.getByText('Selected records').waitFor();
@@ -59,7 +60,7 @@ try {
 
   await page.goto(`${baseURL}/projects/radio-garden`, { waitUntil: 'networkidle' });
   await page.getByRole('heading', { name: /Radio Garden For Latent Machines/i }).waitFor();
-  await page.getByText('Record').waitFor();
+  await page.getByText('Record', { exact: true }).waitFor();
   await page.getByText('Radio Garden For Latent Machines').first().waitFor();
   const detailLayout = await page.evaluate(() => {
     const heading = document.querySelector('.detail-heading h1').getBoundingClientRect();
@@ -73,8 +74,15 @@ try {
   for (const project of projects) {
     await page.goto(`${baseURL}/projects/${project.slug}`, { waitUntil: 'networkidle' });
     await page.getByRole('heading', { name: project.title }).waitFor();
+    if (await page.locator('.specimen-drawer article').count() !== 3) throw new Error(`Missing dossier specimens: ${project.slug}`);
+    await page.getByRole('navigation', { name: 'Adjacent research records' }).getByRole('link').last().click();
+    await page.getByRole('heading', { name: 'Repeatable signal map' }).waitFor();
   }
   await page.setViewportSize({ width: 390, height: 844 });
+  await page.goto(baseURL, { waitUntil: 'networkidle' });
+  const accessionTop = await page.locator('.mobile-accession').evaluate(node => node.getBoundingClientRect().top);
+  const canvasTop = await page.locator('canvas').evaluate(node => node.getBoundingClientRect().top);
+  if (accessionTop >= canvasTop) throw new Error('Mobile archive context must precede specimen');
   await page.goto(`${baseURL}/projects/radio-garden`, { waitUntil: 'networkidle' });
   await page.getByRole('heading', { name: /Radio Garden For Latent Machines/i }).waitFor();
   await page.screenshot({ path: 'test-artifacts/fieldwork-mobile-detail.png', fullPage: true });
