@@ -2,7 +2,7 @@
 
 ## Source of truth
 - Status: Active
-- Last refreshed: 2026-10-01
+- Last refreshed: 2026-10-07
 - Primary product surfaces: Home, research index, research detail, build reference, 404
 - Evidence reviewed: public What Framework package patterns, Vura static deployment needs, Fieldwork product brief
 
@@ -25,6 +25,8 @@
 - Primary navigation: Journal, index, build notes, featured study
 - Core routes/screens: `/`, `/projects`, `/projects/:slug`, `/build`, `/404`
 - Content hierarchy: oversized editorial hero, interactive field instrument, project records, reference notes
+- Detail hierarchy: accession, concise record summary, question/method, three authored specimen excerpts, reading notes/limits, shared repeatability instrument, adjacent record navigation.
+- Mobile first view: compact archive accession before the canvas; the collection and next action remain legible without sacrificing specimen scale.
 
 ## Design principles
 - Principle 1: Treat the lab as a serious gallery and field archive, not a chatbot demo
@@ -73,6 +75,7 @@
 - Tone: measured, art-critical, technically honest
 - Terminology: seeded canvas, record, field note, static alias
 - Microcopy rules: no fake AI, no internal task language
+- Evidence rules: illustrative authored notes are labeled as such. Do not invent corpus sizes, measurements or participant studies; the shared canvas is a comparison instrument, not evidence of completed research.
 
 ## Implementation constraints
 - Framework/styling system: What Framework 0.13.10, what-compiler 0.13.10, plain CSS

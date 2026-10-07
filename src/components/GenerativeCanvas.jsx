@@ -92,9 +92,9 @@ export default function GenerativeCanvas() {
       </div>
       <div class="canvas-copy">
         <div>
-          <p class="kicker">Seeded field instrument</p>
+          <p class="kicker">Shared repeatability instrument</p>
           <h2 id="canvas-title">Repeatable signal map</h2>
-          <p>A deterministic drawing for studying how a named process changes what people notice.</p>
+          <p>The same local drawing instrument accompanies every record. It is a reference for comparison, not evidence of a completed research experiment.</p>
         </div>
         <dl class="canvas-meta" aria-label="Current canvas state">
           <div>

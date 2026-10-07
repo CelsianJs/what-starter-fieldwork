@@ -7,6 +7,7 @@ export default function HomePage() {
   return (
     <div>
       <section class="hero">
+        <div class="mobile-accession"><p class="kicker">Fieldwork / public research journal</p><p>Repeatable art. Open questions.</p><Link href="/projects">Explore the four records →</Link></div>
         <div class="hero-copy">
           <p class="kicker">Public research journal</p>
           <h1>Signals from the edge of perception.</h1>

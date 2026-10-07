@@ -5,6 +5,13 @@ export default function BuildPage() {
       <h1>How Fieldwork is built</h1>
       <div class="build-grid">
         <article>
+          <h2>Authored research dossiers</h2>
+          <p><code>src/data/dossiers.js</code> gives every record a question, method, three local specimens, reading notes and limitations. Static route content is read once; changing canvas state still uses signal accessors.</p>
+          <pre><code>{`const dossier = dossiers[project.slug];
+const next = projects[(projects.indexOf(project) + 1) % projects.length];`}</code></pre>
+          <p>The original sample labels implied artifacts the archive did not contain. The dossiers now show authored excerpts and state their limits. The same canvas accompanies each record as a repeatability instrument, not a claim of measured research. Dataset-driven aliases and listener cleanup continued to work without new infrastructure.</p>
+        </article>
+        <article>
           <h2>Signals and computed state</h2>
           <p><code>src/state/gallery.js</code> owns the global filter, active seed, drawing mode, and selected project. <code>filteredProjects</code> and <code>activeProject</code> are computed values that only update dependent DOM.</p>
           <pre><code>{`export const activeFilter = signal('all');

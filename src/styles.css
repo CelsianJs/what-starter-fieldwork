@@ -143,6 +143,25 @@ pre {
 }
 
 .hero > .canvas-panel { order: 1; }
+.mobile-accession { display: none; }
+.research-dossier { display: grid; grid-template-columns: 1fr 1fr; gap: 2rem; padding: 2rem 0; border-top: 1px solid var(--line-dark); }
+.research-dossier h2 { margin: 0; font: 520 clamp(1.6rem, 3vw, 2.5rem)/1.1 var(--font-display); letter-spacing: -.03em; }
+.research-dossier p, .research-dossier li { line-height: 1.6; color: var(--ink-muted); }
+.research-dossier ul { padding-left: 1.2rem; }
+.dossier-medium { font-size: .8rem; }
+.specimen-drawer { grid-column: 1 / -1; display: grid; grid-template-columns: repeat(3, 1fr); border: 1px solid var(--line-dark); }
+.specimen-drawer article { padding: 1.2rem; background: #fff9ea; }
+.specimen-drawer article + article { border-left: 1px solid var(--line); }
+.research-limits { border-left: 3px solid var(--acid); padding-left: 1rem; }
+.record-navigation { display: flex; justify-content: space-between; gap: 1rem; padding: 1.5rem 0 3rem; font-weight: 700; line-height: 1.5; }
+@media (max-width: 760px) {
+  .mobile-accession { display: block; order: 0; padding: .8rem 0 0; }
+  .mobile-accession > p:not(.kicker) { font: 520 1.5rem/1.1 var(--font-display); margin: .6rem 0; }
+  .mobile-accession a { font-size: .85rem; }
+  .research-dossier, .specimen-drawer { grid-template-columns: 1fr; }
+  .specimen-drawer article + article { border-left: 0; border-top: 1px solid var(--line); }
+  .record-navigation { flex-direction: column; }
+}
 .hero-copy {
   order: 2;
   min-width: 0;
