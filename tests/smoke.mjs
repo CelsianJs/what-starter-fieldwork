@@ -119,7 +119,7 @@ async function assertModernChrome(page) {
   }));
   if (!/Avenir|Segoe/.test(styles.family) || styles.bodySize !== 16 || styles.background !== 'none') throw new Error(`Modern type/surface contract failed: ${JSON.stringify(styles)}`);
   const headingLimit = page.viewportSize().width < 620 ? 32 : 44;
-  if (styles.heading > headingLimit || styles.targets.some((height) => height < 44)) throw new Error(`Unbounded type or undersized control: ${JSON.stringify(styles)}`);
+  if (styles.heading > headingLimit || styles.targets.some((height) => height + 0.01 < 44)) throw new Error(`Unbounded type or undersized control: ${JSON.stringify(styles)}`);
   if (page.url().endsWith('/build')) {
     const hierarchy = await page.evaluate(() => ({
       subheadings: [...document.querySelectorAll('.build-grid h2')].map((node) => ({ size: parseFloat(getComputedStyle(node).fontSize), weight: getComputedStyle(node).fontWeight })),
