@@ -2,7 +2,7 @@
 
 ## Source of truth
 - Status: Active
-- Last refreshed: 2026-10-07
+- Last refreshed: 2026-10-08
 - Primary product surfaces: Home, research index, research detail, build reference, 404
 - Evidence reviewed: public What Framework package patterns, Vura static deployment needs, Fieldwork product brief
 
@@ -24,7 +24,7 @@
 ## Information architecture
 - Primary navigation: Journal, index, build notes, featured study
 - Core routes/screens: `/`, `/projects`, `/projects/:slug`, `/build`, `/404`
-- Content hierarchy: oversized editorial hero, interactive field instrument, project records, reference notes
+- Content hierarchy: bounded editorial heading, interactive field instrument, project records, reference notes
 - Detail hierarchy: accession, concise record summary, question/method, three authored specimen excerpts, reading notes/limits, shared repeatability instrument, adjacent record navigation.
 - Mobile first view: compact archive accession before the canvas; the collection and next action remain legible without sacrificing specimen scale.
 
@@ -34,10 +34,10 @@
 - Tradeoffs: CSR keeps the starter simple while Vura aliases preserve known deep routes
 
 ## Visual language
-- Color: off-white archive paper, ink black, pale clay rules, acid citron as a narrow signal accent, occasional cyan/orange specimen colors
-- Typography: readable literary serif for display; clear humanist sans for body and controls; monospace only for code and canvas annotations
+- Color: neutral archive paper, graphite ink, subtle moss rules, acid citron as a narrow signal accent, occasional cyan/orange specimen colors
+- Typography: local humanist sans for headings, body and controls; build section headings are 24px/600 below the bounded page title. Monospace is reserved for code and canvas annotations.
 - Spacing/layout rhythm: light research archive framing a large dark canvas specimen, concise captions, horizontal toolbars, measured index cards
-- Shape/radius/elevation: hairline rules, accession labels, squared cards, quiet table borders, no generic SaaS shadows
+- Shape/radius/elevation: hairline rules, accession labels, subtle 8px corners, quiet table borders, no generic SaaS shadows
 - Motion: one restrained page-load reveal, precise hover/focus states, deterministic canvas redraws, reduced-motion safe CSS
 - Imagery/iconography: generated canvas is the art object; no stock AI imagery or remote assets
 
@@ -86,3 +86,11 @@
 
 ## Open questions
 - [ ] Final public URL and Vura project id, root agent owns deployment
+
+## Shared modern chrome contract
+
+- Typography: "Avenir Next", "Segoe UI Variable", "Segoe UI", sans-serif; no font downloads. Body 16px/1.6, labels and controls 14px. Monospace is limited to code and structured readouts.
+- Hierarchy: prose, build and detail headings stay within 36–44px on desktop and 28–32px on mobile. The home composition follows the same bounded hierarchy while preserving its primary art, instrument, gear or data surface.
+- Geometry: 8px spacing rhythm, restrained 8px control corners, at least 44px interactive control height, visible two-pixel focus outlines, explicit selected/disabled states.
+- Surfaces: flat theme backgrounds, solid content surfaces, subtle borders; no global decorative grids, repeating textures, heavy shadows or control pills.
+- Ownership: this is a presentation pass. Existing generation, audio, quote/receipt and server-render/cache contracts remain unchanged.
